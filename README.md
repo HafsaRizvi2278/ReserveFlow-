@@ -1,115 +1,245 @@
-# ReserveFlow
+<div align="center">
 
-A resource reservation application for shared meeting rooms, workspaces, and equipment. Employees discover availability and manage their bookings; admins maintain resources and review organization-wide reservations.
+# ◈ ReserveFlow
 
-## Stack
+### Resource reservations, without the scheduling chaos.
 
-- Next.js App Router and TypeScript
-- React 19 and Tailwind CSS v4
-- PostgreSQL (`pg` driver, parameterized SQL)
-- Server-managed opaque sessions, HTTP-only cookies, scrypt password hashing
+**A full-stack resource reservation platform for shared workspaces, meeting rooms, and equipment.**
 
-The original teal/Inter frontend is preserved. The running application uses PostgreSQL; it does not use localStorage for users, resources, sessions, or reservations.
+Employees discover resources and manage bookings. Administrators control resource availability and oversee reservations—all backed by PostgreSQL and server-enforced permissions.
 
-## Requirements
+<br />
 
-- Node.js 22.13+ (or Node.js 24 LTS) and npm
-- PostgreSQL 17+ with permission to enable `btree_gist`, or Docker Desktop
-- Git
+![Next.js](https://img.shields.io/badge/Next.js-16-111827?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-0E7490?style=for-the-badge&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 
-## Local setup — Windows PowerShell
+<br />
+
+[**Explore Features**](#-key-features) · [**Architecture**](#-architecture--data-model) · [**Run Locally**](#-run-locally) · [**Testing**](#-verification--testing)
+
+<sub>Built for the PrimeWave Lab Software Engineering Internship technical assessment · October 2026</sub>
+
+</div>
+
+---
+
+## ✨ Project at a glance
+
+| The challenge | The solution |
+| :--- | :--- |
+| Shared resources can be double-booked. | Database-backed conflict prevention protects booking integrity. |
+| Different users need different permissions. | Employee and admin roles are enforced on the server. |
+| Timezone mistakes cause scheduling errors. | Reservations are validated in the **Asia/Colombo** timezone and stored as UTC instants. |
+| Resource changes should not erase history. | Inactive resources and cancelled reservations retain historical records. |
+
+> **Engineering highlight:** Reservation overlaps are prevented at the PostgreSQL level, including competing requests—not just by disabling dates in the UI.
+
+## 🚀 Key features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 👤 Employee workspace
+
+- Browse and search shared resources
+- Check resource details and availability
+- Create reservations with time validation
+- Edit or cancel eligible future bookings
+- View personal booking history
+
+</td>
+<td width="50%" valign="top">
+
+### 🛡️ Admin control center
+
+- Add and update shared resources
+- Activate or deactivate resources
+- Review organization-wide reservations
+- Manage eligible employee reservations
+- Preserve resource and booking history
+
+</td>
+</tr>
+</table>
+
+### Built-in reliability
+
+- **Conflict-safe reservations** — overlapping bookings are rejected; adjacent bookings are allowed.
+- **Time-aware validation** — rejects past, reversed, invalid, and cross-day bookings.
+- **Role-based authorization** — employees cannot mutate other users' reservations or access admin-only operations.
+- **Session security** — hashed passwords, server-managed sessions, HTTP-only cookies, and login attempt protection.
+- **Clear status feedback** — inactive resources and cancelled reservations are visually distinguished.
+
+## 🖥️ Interface preview
+
+> **Screenshots:** Add real application screenshots here once captured. Avoid using mockups that do not reflect the working application.
+
+| Employee experience | Admin experience |
+| :---: | :---: |
+| Browse resources, check availability, and manage bookings | Manage resources and organization-wide reservations |
+
+<!-- Optional: After committing screenshots to docs/screenshots/, replace the table above with:
+![Employee dashboard](docs/screenshots/employee-dashboard.png)
+![Admin resources](docs/screenshots/admin-resources.png)
+-->
+
+## 🧩 Architecture & data model
+
+```text
+┌───────────────────────────────────────┐
+│  Next.js + React + Tailwind CSS       │
+│  Employee and Admin Interfaces        │
+└───────────────────┬───────────────────┘
+                    │
+                    ▼
+┌───────────────────────────────────────┐
+│  Next.js App Router / API Handlers    │
+│  Authentication · Authorization       │
+│  Input Validation · Booking Rules     │
+└───────────────────┬───────────────────┘
+                    │
+                    ▼
+┌───────────────────────────────────────┐
+│  PostgreSQL                           │
+│  Users · Resources · Reservations     │
+│  Sessions · Login Attempts            │
+│  Database-level Booking Constraints   │
+└───────────────────────────────────────┘
+```
+
+**Entity relationship diagram**
+
+![ReserveFlow ER diagram](docs/er-diagram.svg)
+
+[View the ER diagram](docs/er-diagram.svg) · [Database design notes](docs/ER.md)
+
+### Reservation rules
+
+| Scenario | Expected behavior |
+| :--- | :--- |
+| 09:00–10:00 followed by 09:30–10:30 | ❌ Conflict rejected |
+| 09:00–10:00 followed by 10:00–11:00 | ✅ Adjacent booking allowed |
+| Reservation starts in the past | ❌ Rejected |
+| Reservation crosses Colombo calendar days | ❌ Rejected |
+| Cancelled reservation's time slot | ✅ Can be booked again |
+| Inactive resource | ❌ New bookings blocked |
+
+## 🛠️ Technology stack
+
+| Area | Technology |
+| :--- | :--- |
+| Frontend | Next.js 16 App Router, React 19, TypeScript |
+| Styling | Tailwind CSS v4 |
+| Server | Next.js route handlers, Node.js |
+| Database | PostgreSQL, `pg`, parameterized SQL |
+| Authentication | Server-managed sessions, HTTP-only cookies, scrypt password hashing |
+| Testing | Node.js built-in test runner, TypeScript compiler |
+| Tooling | npm, Git, GitHub, Docker Compose (optional) |
+
+## ⚙️ Run locally
+
+**Prerequisites:** Node.js 22.13+ (or Node.js 24 LTS), npm, PostgreSQL 17+ (or Docker Desktop), and Git.
+
+**1. Clone and install**
 
 ```powershell
+git clone https://github.com/HafsaRizvi2278/ReserveFlow-.git
+cd ReserveFlow-
 npm ci
-# Create .env with DATABASE_URL and APP_ORIGIN before migrating.
-# If using Docker Desktop:
+```
+
+**2. Configure environment variables**
+
+Create `.env` in the project root. Replace the placeholder credentials with your local PostgreSQL credentials.
+
+```dotenv
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/reserveflow
+APP_ORIGIN=http://localhost:3000
+```
+
+Create an empty `reserveflow` database in your PostgreSQL installation. Alternatively, if you use the project's Docker Compose database service, start it with:
+
+```powershell
 docker compose up -d db
+```
+
+> Never commit `.env` or production credentials. If the PostgreSQL password contains URL-special characters, percent-encode them in `DATABASE_URL`.
+
+**3. Migrate, seed, and launch**
+
+```powershell
 npm run db:migrate
 npm run db:seed
 npm run dev
 ```
 
-Open http://localhost:3000. If using your existing PostgreSQL installation, create an empty `reserveflow` database and change `DATABASE_URL` in `.env` to your actual database username/password. Percent-encode special characters in the URL password. Do not commit `.env`.
+Open **http://localhost:3000**.
 
-Example: `postgresql://postgres:YOUR_PASSWORD@localhost:5432/reserveflow`
+### Assessment demo accounts
 
-`APP_ORIGIN` must match the browser URL exactly, including the port. This is used to validate the origin of mutations.
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| Admin | `admin@reserveflow.com` | `admin123` |
+| Employee | `mayaperere@examp.com` | `password` |
+| Employee | `ayesha@examp.com` | `password` |
+| Employee | `dilan@examp.com` | `password` |
 
-If port 3000 is occupied:
+<sub>Demo credentials are for local assessment only. Do not reuse these passwords in production.</sub>
 
-```powershell
-# Also change APP_ORIGIN in .env to http://localhost:3001
-npm run dev -- --port 3001
-```
-
-## Assessment Login Credentials
-
-| Role | Name | Email | Password |
-| --- | --- | --- | --- |
-| Admin | Hafsa Rizvi | `admin@reserveflow.com` | `admin123` |
-| Employee | Maya Perera | `mayaperere@examp.com` | `password` |
-| Employee | Ayesha Fernando | `ayesha@examp.com` | `password` |
-| Employee | Dilan Jayasinghe | `dilan@examp.com` | `password` |
-
-Enter credentials manually. These passwords are intentionally simple for local assessment testing and must not be used in production. Run `npm run db:seed` to create or update these predefined accounts using `scripts/seed.mjs`.
-
-The form submits email and password to the server login API. PostgreSQL stores user records and salted password hashes. Successful password verification creates an HTTP-only session cookie. Sessions persist across refreshes until expiry or logout. Server-side authorization restricts Admin resource management and organization-wide reservation access; Employees can modify only their own future confirmed bookings. Invalid credentials return an error, and sign-in rate limiting remains enabled.
-
-## Commands
+## 🧪 Verification & testing
 
 ```powershell
 npm run typecheck
 npm test
 npm run test:db
 npm run build
-npm run start
 ```
 
-`npm test` covers server validation, ownership rules and password verification. `npm run test:db` requires a configured PostgreSQL database and permission to create an isolated temporary schema. It verifies concurrent overlap rejection, adjacency and cancellation release without changing application records.
+| Check | Last verified result |
+| :--- | :--- |
+| TypeScript type check | ✅ Passed |
+| Unit tests | ✅ 7 / 7 passed |
+| PostgreSQL integration test | ✅ 1 / 1 passed |
+| Production build | ✅ Passed |
 
-## Booking rules
+Tests cover Colombo time conversion, invalid and cross-day bookings, reservation ownership and admin permissions, resource capacity, password verification, and database conflict protection.
 
-- New and edited reservations must start in the future.
-- End must be after start; both belong to the same Sri Lanka date.
-- Only active resources accept new or edited bookings.
-- Employees may edit/cancel only their own future confirmed bookings.
-- Admins may cancel any future confirmed booking.
-- Cancelled bookings are retained and do not occupy a slot.
-- Resource deactivation preserves existing bookings.
-- Stored timestamps are `timestamptz`; display and inputs use Asia/Colombo.
-- Conflicts use half-open ranges `[start,end)`, permitting adjacent bookings.
+## 📁 Repository structure
 
-## Reliability and security decisions
+```text
+ReserveFlow/
+├── database/             # SQL schema and constraints
+├── docs/                 # ER diagram and database notes
+├── public/               # Static assets
+├── scripts/              # Database migration and seed scripts
+├── src/
+│   ├── app/              # App Router pages and API handlers
+│   ├── components/       # Reusable UI components
+│   ├── screens/          # Feature screens
+│   └── server/           # Server-side logic
+├── tests/                # Validation and database tests
+├── compose.yaml          # Optional PostgreSQL service
+└── README.md
+```
 
-Every mutation verifies the server session and role/ownership. Booking operations lock the resource row to coordinate with deactivation. A PostgreSQL GiST exclusion constraint rejects concurrent confirmed overlaps. User input is validated on the server; SQL values are parameterized.
+## 🔭 Potential next steps
 
-Session cookies hold a random token; only its SHA-256 hash is stored in PostgreSQL. Sessions expire after eight hours and are revoked on logout. Passwords use salted scrypt hashes. Sign-in attempts are limited per email over a 15-minute window. Browser mutation origins are checked against `APP_ORIGIN`.
+Email confirmations, calendar integrations, resource usage analytics, automated reminders, and CI/CD are possible future improvements—not features claimed in this version.
 
-Employees receive their own full reservation data and sanitized future occupied intervals for other employees. Other employees' titles, notes and identities are not sent to their browser. Admin endpoints verify roles independently of the UI.
+---
 
-For HTTPS deployment set `COOKIE_SECURE=true`, update `APP_ORIGIN`, use private credentials and configure database TLS according to your provider. Public hosting is not required for the assessment.
+<div align="center">
 
-## Structure
+### Designed and developed by Hafsa Rizvi
 
-- `src/app/`: App Router pages/layouts and API route handler
-- `src/screens/`: existing screen components
-- `src/components/`: shared UI and forms
-- `src/services/apiService.ts`: browser API client
-- `src/server/`: sessions, SQL access, validation and endpoint behavior
-- `src/lib/`: date helpers and thin Next.js navigation adapters
-- `database/001_initial.sql`: schema and constraints
-- `scripts/`: migration and non-destructive seeding
-- `tests/`: unit and PostgreSQL integration checks
-- `docs/ER.md`: entity relationships (Mermaid diagram)
-- `docs/er-diagram.svg`: shareable visual ER diagram
+**Frontend-Focused Full-Stack Developer**
 
-## Verified checks
+[Portfolio](https://hafsa-rizvi.vercel.app/) · [GitHub](https://github.com/HafsaRizvi2278) · [Repository](https://github.com/HafsaRizvi2278/ReserveFlow-)
 
-- TypeScript typecheck: passed
-- Unit tests: 7 passed
-- PostgreSQL integration test: 1 passed
-- Production build: passed
+<sub>PrimeWave Lab (Pvt) Ltd · Software Engineering Internship Technical Assessment</sub>
 
-## Assessment submission
-
-Push the complete source to your GitHub repository, provide a shareable ER diagram link (`docs/er-diagram.svg`), and record a 3–5 minute demo. Complete the official submission form by 15 October 2026, 11:59 PM Sri Lanka time. Do not submit until local setup, database checks, and browser flows pass.
+</div>
