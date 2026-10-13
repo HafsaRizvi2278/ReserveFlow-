@@ -18,13 +18,36 @@ Employees discover resources and manage bookings. Administrators control resourc
 
 <br />
 
-[**Explore Features**](#-key-features) · [**Architecture**](#-architecture--data-model) · [**Run Locally**](#-run-locally) · [**Testing**](#-verification--testing)
+[**Features**](#-key-features) · [**Architecture**](#-architecture--data-model) · [**Local Setup**](#️-run-locally) · [**Testing**](#-verification--testing) · [**Assessment**](#-assessment-deliverables)
 
 <sub>Built for the PrimeWave Lab Software Engineering Internship technical assessment · October 2026</sub>
 
 </div>
 
 ---
+
+## 🎯 Assessment alignment
+
+This project responds to PrimeWave Lab's **Resource Reservation Management System** business scenario: replacing informal coordination and manual records with a centralized, reliable way to manage shared resources and bookings.
+
+| Assessment expectation | ReserveFlow implementation / evidence |
+| :--- | :--- |
+| Functional full-stack application | Employee and administrator interfaces, booking and resource workflows |
+| Next.js App Router + TypeScript | Application routes, server handlers, and typed implementation |
+| PostgreSQL persistent storage | SQL schema, migrations, seed data, and reservation constraints |
+| Thoughtful problem-solving | Database-level overlap protection, time validation, ownership checks |
+| Maintainable architecture | Separated screens, components, server logic, and database scripts |
+| Practical usability | Search, status indicators, clear booking validation, role-specific workflows |
+| Reproducible local setup | Installation, environment configuration, migrations, and demo accounts below |
+| Explainable technical decisions | Architecture, reservation rules, security approach, and test coverage below |
+
+**Design decisions and trade-offs**
+
+- **PostgreSQL as the source of truth:** booking conflicts must remain blocked even if two users submit overlapping requests at nearly the same time.
+- **Server-side authorization:** hiding admin controls in the interface is not sufficient; API operations also verify permissions and reservation ownership.
+- **Asia/Colombo scheduling:** user-entered local times are validated consistently and converted to UTC instants for storage.
+- **Status instead of destructive deletion:** deactivated resources and cancelled reservations preserve records for review.
+- **Focused scope:** the application prioritizes core booking workflows, data integrity, and testability over unrelated features.
 
 ## ✨ Project at a glance
 
@@ -225,6 +248,23 @@ ReserveFlow/
 ├── compose.yaml          # Optional PostgreSQL service
 └── README.md
 ```
+
+## 📦 Assessment deliverables
+
+| Required submission | Location / status |
+| :--- | :--- |
+| Complete application source and setup README | [GitHub repository](https://github.com/HafsaRizvi2278/ReserveFlow-) |
+| Entity Relationship (ER) diagram | [Shareable ER diagram](https://github.com/HafsaRizvi2278/ReserveFlow-/blob/main/docs/er-diagram.svg) |
+| 3–5 minute demonstration video | **Add the shareable recording link here after recording and uploading** |
+
+**Suggested 3–5 minute demo flow:** introduce the manual-booking problem; sign in as an employee; browse resources; create a booking and show conflict rejection; edit/cancel an eligible booking; sign in as admin; manage resource status and reservations; close with PostgreSQL data integrity and architecture decisions.
+
+**Submission:** [Official PrimeWave Lab assessment form](https://forms.gle/HzQH6tB5c4edPjnn8)  
+**Deadline:** Thursday, **15 October 2026 at 11:59 PM (Sri Lanka time, UTC+05:30)**. Use the same email address as the original internship application. Ensure the repository, video, and ER diagram are accessible to reviewers.
+
+> **Submission note:** A polished README supports evaluation, but does not replace the required working application, demonstration recording, or separately submitted ER diagram link.
+
+---
 
 ## 🔭 Potential next steps
 
