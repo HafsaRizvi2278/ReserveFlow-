@@ -255,20 +255,8 @@ ReserveFlow/
 | :--- | :--- |
 | Complete application source and setup README | [GitHub repository](https://github.com/HafsaRizvi2278/ReserveFlow-) |
 | Entity Relationship (ER) diagram | [Shareable ER diagram](https://github.com/HafsaRizvi2278/ReserveFlow-/blob/main/docs/er-diagram.svg) |
-| 3–5 minute demonstration video | **Add the shareable recording link here after recording and uploading** |
+| 3–5 minute demonstration video | [Google Drive Link](https://drive.google.com/file/d/1iyC76gehLqJmTMPj0UgsJjlivrRKwxPY/view?usp=sharing) |
 
-**Suggested 3–5 minute demo flow:** introduce the manual-booking problem; sign in as an employee; browse resources; create a booking and show conflict rejection; edit/cancel an eligible booking; sign in as admin; manage resource status and reservations; close with PostgreSQL data integrity and architecture decisions.
-
-**Submission:** [Official PrimeWave Lab assessment form](https://forms.gle/HzQH6tB5c4edPjnn8)  
-**Deadline:** Thursday, **15 October 2026 at 11:59 PM (Sri Lanka time, UTC+05:30)**. Use the same email address as the original internship application. Ensure the repository, video, and ER diagram are accessible to reviewers.
-
-> **Submission note:** A polished README supports evaluation, but does not replace the required working application, demonstration recording, or separately submitted ER diagram link.
-
----
-
-## 🔭 Potential next steps
-
-Email confirmations, calendar integrations, resource usage analytics, automated reminders, and CI/CD are possible future improvements—not features claimed in this version.
 
 ---
 
